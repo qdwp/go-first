@@ -9,7 +9,7 @@
 
 当一个函数不希望程序在一开始的时候就被执行的时候，我们可以使用 sync.Once 。
 
-例如：
+## Example
 
 ```golang
 package main
