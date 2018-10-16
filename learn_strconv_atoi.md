@@ -263,7 +263,7 @@ func Atoi(s string) (int, error) {
         n := 0
         for _, ch := range []byte(s) {
             ch -= '0'
-            if ch > 9 {
+            if ch > 9 { // 不是数字
                 return 0, &NumError{fnAtoi, s0, ErrSyntax}
             }
             n = n*10 + int(ch)
