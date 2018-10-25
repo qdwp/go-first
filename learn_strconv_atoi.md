@@ -1,4 +1,4 @@
-# [Golang] 初探之 strconv.Atoi
+# [Golang初探] 之 strconv.Atoi
 
 ## 描述
 

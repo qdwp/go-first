@@ -1,4 +1,4 @@
-# [Golang] 初探之 sync.Once
+# [Golang初探] 之 sync.Once
 
 ##  描述
 

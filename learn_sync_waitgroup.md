@@ -1,4 +1,4 @@
-# [Golang] 初探之 sync.WaitGroup
+# [Golang初探] 之 sync.WaitGroup
 
 ## 描述
 
