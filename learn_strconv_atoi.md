@@ -10,21 +10,21 @@
 package main
 
 import (
-	"fmt"
-	"strconv"
+    "fmt"
+    "strconv"
 )
 
 func main() {
 
     // ParseUint
-	v := "42"
-	if s, err := strconv.ParseUint(v, 10, 32); err == nil {
-		fmt.Printf("%T, %v\n", s, s)
-	}
-	if s, err := strconv.ParseUint(v, 10, 64); err == nil {
-		fmt.Printf("%T, %v\n", s, s)
+    v := "42"
+    if s, err := strconv.ParseUint(v, 10, 32); err == nil {
+        fmt.Printf("%T, %v\n", s, s)
     }
-    
+    if s, err := strconv.ParseUint(v, 10, 64); err == nil {
+        fmt.Printf("%T, %v\n", s, s)
+    }
+
     /* Output:
         uint64, 42
         uint64, 42
@@ -32,21 +32,21 @@ func main() {
 
     // ParseInt
     v32 := "-354634382"
-	if s, err := strconv.ParseInt(v32, 10, 32); err == nil {
-		fmt.Printf("%T, %v\n", s, s)
-	}
-	if s, err := strconv.ParseInt(v32, 16, 32); err == nil {
-		fmt.Printf("%T, %v\n", s, s)
-	}
-
-	v64 := "-3546343826724305832"
-	if s, err := strconv.ParseInt(v64, 10, 64); err == nil {
-		fmt.Printf("%T, %v\n", s, s)
-	}
-	if s, err := strconv.ParseInt(v64, 16, 64); err == nil {
-		fmt.Printf("%T, %v\n", s, s)
+    if s, err := strconv.ParseInt(v32, 10, 32); err == nil {
+        fmt.Printf("%T, %v\n", s, s)
     }
-    
+    if s, err := strconv.ParseInt(v32, 16, 32); err == nil {
+        fmt.Printf("%T, %v\n", s, s)
+    }
+
+    v64 := "-3546343826724305832"
+    if s, err := strconv.ParseInt(v64, 10, 64); err == nil {
+        fmt.Printf("%T, %v\n", s, s)
+    }
+    if s, err := strconv.ParseInt(v64, 16, 64); err == nil {
+        fmt.Printf("%T, %v\n", s, s)
+    }
+
     /* Output:
         int64, -354634382
         int64, -3546343826724305832
@@ -54,8 +54,8 @@ func main() {
 
     // Atoi
     v := "10"
-	if s, err := strconv.Atoi(v); err == nil {
-		fmt.Printf("%T, %v", s, s)
+    if s, err := strconv.Atoi(v); err == nil {
+        fmt.Printf("%T, %v", s, s)
     }
     /* Output:
         int, 10
@@ -64,9 +64,7 @@ func main() {
 }
 ```
 
-
 ## 源码
-
 
 ```golang
 
@@ -283,7 +281,3 @@ func Atoi(s string) (int, error) {
 }
 
 ```
-
-
-
-

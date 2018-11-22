@@ -35,12 +35,12 @@ wg.Wait()
 ```golang
 // A WaitGroup must not be copied after first use.
 type WaitGroup struct {
-	noCopy noCopy
+    noCopy noCopy
 
-	// 64位数据高位表示计数器，低位表示等待计数。
-	// 使用12位(byte)计数(uint32 * 3 => 8 * 3)
-	// 8位表示对齐计数，另外4位表示信号量
-	state1 [3]uint32
+    // 64位数据高位表示计数器，低位表示等待计数。
+    // 使用12位(byte)计数(uint32 * 3 => 8 * 3)
+    // 8位表示对齐计数，另外4位表示信号量
+    state1 [3]uint32
 }
 ```
 
@@ -48,51 +48,51 @@ type WaitGroup struct {
 
 ```golang
 func (wg *WaitGroup) Add(delta int) {
-	// 取得计数信息和信号量
-	statep, semap := wg.state()
-	
-	... // 忽略 race 相关代码
-	
-	// 计数器(64位高位) + delta
-	state := atomic.AddUint64(statep, uint64(delta)<<32)
-	v := int32(state >> 32)		// 计数器
-	w := uint32(state)			// 等待计数
-	
-	...
+    // 取得计数信息和信号量
+    statep, semap := wg.state()
 
-	// 计数器为负
-	if v < 0 {
-		panic("sync: negative WaitGroup counter")
-	}
+    ... // 忽略 race 相关代码
 
-	// Add 方法与 Wait 不应该并发执行
-	if w != 0 && delta > 0 && v == int32(delta) {
-		panic("sync: WaitGroup misuse: Add called concurrently with Wait")
-	}
+    // 计数器(64位高位) + delta
+    state := atomic.AddUint64(statep, uint64(delta)<<32)
+    v := int32(state >> 32)        // 计数器
+    w := uint32(state)            // 等待计数
 
-	// 计数器正常增加
-	if v > 0 || w == 0 {
-		return
-	}
+    ...
 
-	if *statep != state {
-		panic("sync: WaitGroup misuse: Add called concurrently with Wait")
-	}
-	// Reset waiters count to 0.
-	*statep = 0
-	for ; w != 0; w-- {
-		runtime_Semrelease(semap, false)
-	}
+    // 计数器为负
+    if v < 0 {
+        panic("sync: negative WaitGroup counter")
+    }
+
+    // Add 方法与 Wait 不应该并发执行
+    if w != 0 && delta > 0 && v == int32(delta) {
+        panic("sync: WaitGroup misuse: Add called concurrently with Wait")
+    }
+
+    // 计数器正常增加
+    if v > 0 || w == 0 {
+        return
+    }
+
+    if *statep != state {
+        panic("sync: WaitGroup misuse: Add called concurrently with Wait")
+    }
+    // Reset waiters count to 0.
+    *statep = 0
+    for ; w != 0; w-- {
+        runtime_Semrelease(semap, false)
+    }
 
 }
 
 // state 方法
 func (wg *WaitGroup) state() (statep *uint64, semap *uint32) {
-	if uintptr(unsafe.Pointer(&wg.state1))%8 == 0 {
-		return (*uint64)(unsafe.Pointer(&wg.state1)), &wg.state1[2]
-	} else {
-		return (*uint64)(unsafe.Pointer(&wg.state1[1])), &wg.state1[0]
-	}
+    if uintptr(unsafe.Pointer(&wg.state1))%8 == 0 {
+        return (*uint64)(unsafe.Pointer(&wg.state1)), &wg.state1[2]
+    } else {
+        return (*uint64)(unsafe.Pointer(&wg.state1[1])), &wg.state1[0]
+    }
 }
 
 ```
@@ -102,7 +102,7 @@ func (wg *WaitGroup) state() (statep *uint64, semap *uint32) {
 ```golang
 // Done decrements the WaitGroup counter by one.
 func (wg *WaitGroup) Done() {
-	wg.Add(-1)
+    wg.Add(-1)
 }
 ```
 
@@ -111,37 +111,37 @@ func (wg *WaitGroup) Done() {
 ```golang
 // Wait blocks until the WaitGroup counter is zero.
 func (wg *WaitGroup) Wait() {
-	statep, semap := wg.state()
-	...
+    statep, semap := wg.state()
+    ...
 
-	for {
-		state := atomic.LoadUint64(statep)
-		v := int32(state >> 32)		// 计数器
-		w := uint32(state)			// 等待计数
-		if v == 0 {
-			// 计数器为 0 ，不需要等待
-			if race.Enabled {
-				race.Enable()
-				race.Acquire(unsafe.Pointer(wg))
-			}
-			return
-		}
-		// 增加等待计数
-		// 原子级替换操作
-		if atomic.CompareAndSwapUint64(statep, state, state+1) {
-			if race.Enabled && w == 0 {
-				race.Write(unsafe.Pointer(semap))
-			}
-			runtime_Semacquire(semap)
-			if *statep != 0 {
-				panic("sync: WaitGroup is reused before previous Wait has returned")
-			}
-			if race.Enabled {
-				race.Enable()
-				race.Acquire(unsafe.Pointer(wg))
-			}
-			return
-		}
-	}
+    for {
+        state := atomic.LoadUint64(statep)
+        v := int32(state >> 32)        // 计数器
+        w := uint32(state)            // 等待计数
+        if v == 0 {
+            // 计数器为 0 ，不需要等待
+            if race.Enabled {
+                race.Enable()
+                race.Acquire(unsafe.Pointer(wg))
+            }
+            return
+        }
+        // 增加等待计数
+        // 原子级替换操作
+        if atomic.CompareAndSwapUint64(statep, state, state+1) {
+            if race.Enabled && w == 0 {
+                race.Write(unsafe.Pointer(semap))
+            }
+            runtime_Semacquire(semap)
+            if *statep != 0 {
+                panic("sync: WaitGroup is reused before previous Wait has returned")
+            }
+            if race.Enabled {
+                race.Enable()
+                race.Acquire(unsafe.Pointer(wg))
+            }
+            return
+        }
+    }
 }
 ```

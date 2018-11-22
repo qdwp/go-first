@@ -1,6 +1,6 @@
 # [Golang初探] 之 sync.Once
 
-##  描述
+## 描述
 
 **sync.Once** 是 Golang package 中使方法只执行一次的对象实现，作用与 init 函数类似。但也有所不同。
 
@@ -88,9 +88,3 @@ func (o *Once) Do(f func()) {
     }
 }
 ```
-
-
-
-
-
-
